@@ -19,9 +19,7 @@ xf = torch.linspace(0, 1, 2**16 + 1).reshape(-1, 1)
 
 
 # Train a depth-m network from random weights and return its sup error
-def train(m: int, seed: int, steps: int = 20000) -> float:
-    torch.manual_seed(seed)
-    net = make_net(m)
+def train(net: nn.Module, steps: int = 20000) -> float:
     loss_fn = nn.MSELoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
 
@@ -39,7 +37,11 @@ def train(m: int, seed: int, steps: int = 20000) -> float:
 if __name__ == "__main__":
     results = []
     for m in range(1, 13):
-        errs = [train(m, seed) for seed in range(5)]
+        errs = []
+        for seed in range(5):
+            torch.manual_seed(seed)
+            net = make_net(m)
+            errs.append(train(net))
         best, med = min(errs), median(errs)
         results.append((m, best, med))
         print(m, best, med, 2.0**(-2*m - 2))
