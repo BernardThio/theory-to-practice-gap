@@ -18,10 +18,10 @@ y_train = x_train**2
 xf = torch.linspace(0, 1, 2**16 + 1).reshape(-1, 1)
 
 
-# Train a depth-m network from random weights and return its sup error
-def train(net: nn.Module, steps: int = 20000) -> float:
+# Train a given network and return its sup error
+def train(net: nn.Module, steps: int = 20000, lr: float = 1e-3) -> float:
     loss_fn = nn.MSELoss()
-    optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
+    optimizer = torch.optim.Adam(net.parameters(), lr=lr)
 
     for _ in range(steps):
         optimizer.zero_grad()
